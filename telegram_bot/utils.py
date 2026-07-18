@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import re
 import html
+import calendar
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 
@@ -329,3 +330,71 @@ def toggle_reminder_active(user, reminder_id):
 @sync_to_async
 def delete_reminder(user, reminder_id):
     return Reminder.objects.filter(user=user, id=reminder_id).delete()
+
+
+# ---- Reminder firing / recurrence (used by scheduler.py) ----
+
+@sync_to_async
+def get_due_reminders():
+    """
+    Reminders whose time has come, for a user who actually has a linked
+    Telegram chat. Returns a list of (reminder, chat_id) tuples.
+    """
+    now = timezone.now()
+    qs = Reminder.objects.filter(is_active=True, remind_at__lte=now).select_related("user__profile")
+    result = []
+    for r in qs:
+        profile = getattr(r.user, "profile", None)
+        chat_id = getattr(profile, "telegram_chat_id", None)
+        if chat_id:
+            result.append((r, chat_id))
+    return result
+
+
+def _next_occurrence(current: datetime, recurrence_type: str, interval: int) -> datetime:
+    interval = interval or 1
+    if recurrence_type == "daily":
+        return current + timedelta(days=interval)
+    if recurrence_type == "weekly":
+        return current + timedelta(weeks=interval)
+    if recurrence_type == "monthly":
+        month_index = current.month - 1 + interval
+        year = current.year + month_index // 12
+        month = month_index % 12 + 1
+        day = min(current.day, calendar.monthrange(year, month)[1])
+        return current.replace(year=year, month=month, day=day)
+    # 'custom' (and any unrecognized value) -> treat interval as days
+    return current + timedelta(days=interval)
+
+
+@sync_to_async
+def advance_or_deactivate_reminder(reminder: Reminder):
+    """
+    Called right after a reminder has been delivered.
+    One-off reminders get deactivated. Recurring ones are rolled forward to
+    their next future occurrence (skipping over any missed ones, e.g. if the
+    bot process was down), unless that would pass `recurrence_end_date`.
+    """
+    now = timezone.now()
+
+    if not reminder.is_recurring or reminder.recurrence_type == "none":
+        reminder.is_active = False
+        reminder.last_notified = now
+        reminder.save(update_fields=["is_active", "last_notified"])
+        return reminder
+
+    next_at = reminder.remind_at
+    for _ in range(1000):  # safety bound, never expected to actually loop this much
+        next_at = _next_occurrence(next_at, reminder.recurrence_type, reminder.recurrence_interval)
+        if reminder.recurrence_end_date and next_at.date() > reminder.recurrence_end_date:
+            reminder.is_active = False
+            reminder.last_notified = now
+            reminder.save(update_fields=["is_active", "last_notified"])
+            return reminder
+        if next_at > now:
+            break
+
+    reminder.remind_at = next_at
+    reminder.last_notified = now
+    reminder.save(update_fields=["remind_at", "last_notified"])
+    return reminder

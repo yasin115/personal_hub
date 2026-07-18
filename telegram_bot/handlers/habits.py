@@ -27,7 +27,7 @@ async def _render_list(target_send, django_user, page: int):
             reply_markup=habits_list_kb([], 0, 0, PER_PAGE),
         )
         return
-    text = f"📋 <b>عادات شما</b> ({total} مورد)\n\nروی هر عادت دکمه‌های عملیات را می‌بینید 👇"
+    text = f"📋 <b>عادات شما</b> — {total} مورد\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
     await target_send(text, reply_markup=habits_list_kb(habits, page, total, PER_PAGE))
 
 

@@ -30,7 +30,7 @@ async def _render_list(target_send, django_user, page: int):
             reply_markup=reminders_list_kb([], 0, 0, PER_PAGE),
         )
         return
-    text = f"🔔 <b>یادآورهای آینده</b> ({total} مورد)"
+    text = f"⏰ <b>یادآورهای آینده</b> — {total} مورد\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
     await target_send(text, reply_markup=reminders_list_kb(items, page, total, PER_PAGE))
 
 

@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Personal Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<link rel="stylesheet" href="{% static 'webapp/style.css' %}">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <header class="brand">
+    <div class="brand-badge">PH</div>
+    <div class="brand-text">
+      <h1>Personal Hub</h1>
+      <p id="brandSubtitle">عادت‌ها، کارها، مالی و یادآورهات، یکجا</p>
+    </div>
+  </header>
+
+  <!-- ============ AUTH VIEW (login / register) ============ -->
+  <main id="authView" class="card hidden">
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="login">ورود</button>
+      <button class="tab-btn" data-tab="register">ثبت‌نام</button>
+    </div>
+
+    <form id="loginForm" class="form">
+      <label>نام کاربری
+        <input type="text" name="username" autocomplete="username" required>
+      </label>
+      <label>رمز عبور
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <div class="form-error" id="loginError"></div>
+      <button type="submit" class="btn btn-primary">ورود</button>
+    </form>
+
+    <form id="registerForm" class="form hidden">
+      <label>نام کاربری
+        <input type="text" name="username" autocomplete="username" required minlength="3">
+      </label>
+      <label>ایمیل
+        <input type="email" name="email" autocomplete="email">
+      </label>
+      <label>رمز عبور
+        <input type="password" name="password" autocomplete="new-password" required minlength="8">
+      </label>
+      <label>تکرار رمز عبور
+        <input type="password" name="password2" autocomplete="new-password" required minlength="8">
+      </label>
+      <div class="form-error" id="registerError"></div>
+      <button type="submit" class="btn btn-primary">ساخت حساب</button>
+    </form>
+
+  </main>
+
+  <!-- ============ DASHBOARD VIEW (after login) ============ -->
+  <main id="dashboardView" class="card hidden">
+
+    <div class="user-row">
+      <div>
+        👋 سلام <b id="userName"></b>
+      </div>
+      <button id="logoutBtn" class="btn-link">خروج</button>
+    </div>
+
+    <section id="linkCard" class="link-card">
+
+      <div id="linkStatusUnknown" class="hidden">
+        <div class="spinner"></div>
+        <p>در حال بررسی وضعیت اتصال تلگرام...</p>
+      </div>
+
+      <div id="linkStatusLinked" class="hidden">
+        <div class="status-icon status-ok">✅</div>
+        <h2>حساب تلگرام متصل است</h2>
+        <p class="muted">می‌تونی از ربات هم برای مدیریت همه‌چیز استفاده کنی.</p>
+        <button id="unlinkBtn" class="btn btn-danger-outline">قطع اتصال تلگرام</button>
+      </div>
+
+      <div id="linkStatusTelegramAuto" class="hidden">
+        <div class="spinner"></div>
+        <p>در حال اتصال خودکار حساب تلگرام...</p>
+      </div>
+
+      <div id="linkStatusBrowser" class="hidden">
+        <div class="status-icon">🔗</div>
+        <h2>اتصال حساب تلگرام</h2>
+        <p class="muted">برای استفاده از ربات، حساب تلگرامت رو با یک لمس وصل کن.</p>
+        <button id="connectBtn" class="btn btn-primary">🔗 اتصال با تلگرام</button>
+
+        <div id="connectPanel" class="connect-panel hidden">
+          <canvas id="qrCanvas"></canvas>
+          <p class="muted small">این کد رو با تلگرام موبایلت اسکن کن، یا در موبایل مستقیم دکمه زیر رو بزن:</p>
+          <a id="deepLinkBtn" class="btn btn-primary" target="_blank" rel="noopener">باز کردن تلگرام</a>
+          <p class="muted small" id="connectWaiting">⏳ منتظر تایید در تلگرام...</p>
+        </div>
+
+        <details class="manual-fallback">
+          <summary>یا کد دستی که از ربات گرفتی رو وارد کن</summary>
+          <form id="manualForm" class="form inline-form">
+            <input type="text" name="code" placeholder="مثلاً 482913" inputmode="numeric" maxlength="12">
+            <button type="submit" class="btn btn-primary">تایید کد</button>
+          </form>
+          <div class="form-error" id="manualError"></div>
+        </details>
+      </div>
+
+    </section>
+
+  </main>
+
+  <p class="footnote">Personal Hub &middot; قابل استفاده به عنوان مینی‌اپ تلگرام یا وب‌سایت مستقل</p>
+
+</div>
+
+<script src="{% static 'webapp/app.js' %}"></script>
+</body>
+</html>

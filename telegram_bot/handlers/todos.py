@@ -28,7 +28,7 @@ async def _render_list(target_send, django_user, page: int):
             reply_markup=todos_list_kb([], 0, 0, PER_PAGE),
         )
         return
-    text = f"✅ <b>کارهای در انتظار</b> ({total} مورد)"
+    text = f"✅ <b>کارهای در انتظار</b> — {total} مورد\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
     await target_send(text, reply_markup=todos_list_kb(todos, page, total, PER_PAGE))
 
 

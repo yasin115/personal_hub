@@ -7,7 +7,8 @@ djangorestframework-simplejwt>=5.3.0
 django-filter>=24.0
 
 # Telegram Bot - aiogram 3.x (recommended, more flexible)
-aiogram>=3.7.0
+# >=3.26 required: native colored button style (style="success"/"danger"/"primary")
+aiogram>=3.26.0
 
 # Alternative (if you prefer):
 # python-telegram-bot>=20.0

@@ -18,6 +18,17 @@ from .habits import router as habits_router
 from .todos import router as todos_router
 from .finance import router as finance_router
 from .reminders import router as reminders_router
+from .admin import router as admin_router          # ← اضافه کن
+
+all_routers = [
+    admin_router,        # ← اول از همه، قبل از هر روتر دیگه‌ای
+    linking_router,
+    habits_router,
+    todos_router,
+    finance_router,
+    reminders_router,
+    common_router,
+]
 
 # Order matters a little: keep `common_router` last among text-catchers so
 # specific commands/handlers in feature routers get first refusal, but the

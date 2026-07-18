@@ -35,6 +35,9 @@ urlpatterns = [
 
     # Telegram bot webhook (optional, if you prefer webhook over polling)
     path('api/telegram/webhook/', include('telegram_bot.urls')),
+
+    # Mini App / standalone website (login, register, connect Telegram)
+    path('', include('webapp.urls')),
 ]
 
 # Serve media in development

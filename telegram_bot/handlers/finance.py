@@ -33,10 +33,11 @@ async def cmd_balance(message: Message, django_user, state: FSMContext):
     income, expense = await get_finance_totals(django_user)
     balance = income - expense
     text = (
-        "💰 <b>خلاصه مالی شما</b>\n\n"
-        f"درآمد کل: <b>+{fmt_money(income)}</b>\n"
-        f"هزینه کل: <b>-{fmt_money(expense)}</b>\n"
-        f"مانده: <b>{fmt_money(balance)}</b>"
+        "💰 <b>خلاصه مالی شما</b>\n"
+        "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n"
+        f"🟢 درآمد کل: <b>+{fmt_money(income)}</b>\n"
+        f"🔴 هزینه کل: <b>-{fmt_money(expense)}</b>\n"
+        f"💼 مانده: <b>{fmt_money(balance)}</b>"
     )
     await message.answer(text, reply_markup=finance_home_kb())
 
@@ -46,7 +47,7 @@ async def _render_recent(target_send, django_user, page: int):
     if total == 0:
         await target_send("هنوز تراکنشی ثبت نکرده‌اید.", reply_markup=finance_home_kb())
         return
-    text = f"📜 <b>تراکنش‌های اخیر</b> ({total} مورد)"
+    text = f"💰 <b>تراکنش‌های اخیر</b> — {total} مورد\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
     await target_send(text, reply_markup=transactions_list_kb(items, page, total, PER_PAGE))
 
 

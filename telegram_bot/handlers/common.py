@@ -15,21 +15,23 @@ from ..utils import esc
 
 router = Router(name="common")
 
+DIVIDER = "┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈"
 
 HELP_TEXT = (
-    "📌 <b>راهنمای ربات Personal Hub</b>\n\n"
-    "از منوی پایین صفحه یا دستورات زیر استفاده کنید:\n\n"
-    "📋 <b>عادت‌ها</b>\n"
-    "/habits — لیست و مدیریت عادات\n\n"
-    "✅ <b>کارها</b>\n"
-    "/todos — لیست و مدیریت کارها\n\n"
-    "💰 <b>مالی</b>\n"
-    "/balance — خلاصه مالی و ثبت تراکنش\n\n"
-    "🔔 <b>یادآورها</b>\n"
-    "/reminders — لیست و مدیریت یادآورها\n\n"
+    "📖 <b>راهنمای Personal Hub</b>\n"
+    f"{DIVIDER}\n\n"
+    "📋 <b>عادت‌ها</b> — /habits\n"
+    "ساخت عادت، ثبت روزانه با یک لمس، آمار ۷/۳۰ روز اخیر\n\n"
+    "✅ <b>کارها</b> — /todos\n"
+    "افزودن با اولویت و سررسید، تکمیل با یک لمس\n\n"
+    "💰 <b>مالی</b> — /balance\n"
+    "خلاصه درآمد/هزینه، ثبت تراکنش با دسته‌بندی\n\n"
+    "⏰ <b>یادآورها</b> — /reminders\n"
+    "یادآوری‌های زمان‌دار (تکراری یا یک‌بار) — دقیقاً سر وقت پیام می‌دم 🔔\n\n"
+    f"{DIVIDER}\n"
     "⚙️ /settings — تنظیمات و اتصال حساب\n"
-    "❌ /cancel — لغو عملیات جاری (فرم‌های چند مرحله‌ای)\n"
-    "🏠 /menu — نمایش منوی اصلی"
+    "🏠 /menu — منوی اصلی\n"
+    "❌ /cancel — لغو فرم چند مرحله‌ای جاری"
 )
 
 
@@ -39,16 +41,20 @@ async def cmd_start(message: Message, django_user, state: FSMContext):
     if django_user:
         name = esc(django_user.first_name or django_user.username)
         await message.answer(
-            f"سلام {name}! 👋\n\nبه <b>Personal Hub</b> خوش آمدید.\n"
-            "از منوی پایین صفحه بخش مورد نظر را انتخاب کنید 👇",
+            f"👋 سلام {name} عزیز!\n\n"
+            "به <b>Personal Hub</b> خوش اومدی ✨\n"
+            "از منوی پایین صفحه بخش مورد نظر رو انتخاب کن 👇",
             reply_markup=main_menu_kb(),
         )
     else:
         await message.answer(
-            "سلام! 👋\n\n"
-            "این ربات به حساب Personal Hub شما وصل می‌شود تا بتوانید عادت‌ها، "
-            "کارها، تراکنش‌های مالی و یادآورهایتان را همینجا هم مدیریت کنید.\n\n"
-            "برای شروع، حساب‌تان را وصل کنید:",
+            "👋 <b>سلام! به Personal Hub خوش اومدی</b>\n"
+            f"{DIVIDER}\n\n"
+            "📋 عادت‌هات رو دنبال کن\n"
+            "✅ کارهات رو مدیریت کن\n"
+            "💰 درآمد و هزینه‌هات رو ثبت کن\n"
+            "⏰ یادآورهات رو سر وقت دریافت کن\n\n"
+            "برای شروع، فقط کافیه حسابت رو وصل کنی 👇",
             reply_markup=link_account_kb(),
         )
 
@@ -88,12 +94,13 @@ async def cmd_cancel(message: Message, state: FSMContext):
 async def cmd_settings(message: Message, django_user):
     if not django_user:
         return await message.answer(
-            "حساب شما وصل نیست.", reply_markup=link_account_kb()
+            "🔓 حساب شما هنوز وصل نیست.", reply_markup=link_account_kb()
         )
     text = (
-        f"⚙️ <b>تنظیمات</b>\n\n"
-        f"👤 کاربر: {esc(django_user.username)}\n"
-        f"🔗 وضعیت اتصال: متصل ✅"
+        f"⚙️ <b>تنظیمات</b>\n"
+        f"{DIVIDER}\n\n"
+        f"👤 کاربر: <b>{esc(django_user.username)}</b>\n"
+        f"🔗 وضعیت اتصال: 🟢 متصل"
     )
     await message.answer(text, reply_markup=settings_kb(is_linked=True))
 
@@ -118,10 +125,10 @@ async def cb_noop(callback: CallbackQuery):
 async def unknown_message(message: Message, django_user):
     if django_user:
         await message.answer(
-            "متوجه این پیام نشدم 🤔 از منوی پایین صفحه استفاده کنید یا /help را بزنید.",
+            "🤔 متوجه این پیام نشدم. از منوی پایین صفحه استفاده کن یا ℹ️ راهنما رو بزن.",
             reply_markup=main_menu_kb(),
         )
     else:
         await message.answer(
-            "متوجه این پیام نشدم 🤔 برای شروع، /start را بزنید.",
+            "🤔 متوجه این پیام نشدم. برای شروع، /start را بزنید.",
         )

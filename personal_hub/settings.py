@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # Third party
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'django_filters',
 
     # Local apps
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'reminders',
     'finance',
     'telegram_bot',
+    'webapp',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +163,7 @@ SIMPLE_JWT = {
 }
 
 # Telegram Bot Token (set your own)
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '6197064545:AAEHhzzZCF-b_NQM8-rLxTX7AqCNf77V-hM')
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE')
+ADMIN_TELEGRAM_ID = int(os.environ.get('ADMIN_TELEGRAM_ID', '1650342457'))
 
 # For extensibility: Add more apps here and register their routers in urls.py
