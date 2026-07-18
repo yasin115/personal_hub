@@ -161,6 +161,6 @@ SIMPLE_JWT = {
 }
 
 # Telegram Bot Token (set your own)
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', 'YOUR_BOT_TOKEN_HERE')
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '6197064545:AAEHhzzZCF-b_NQM8-rLxTX7AqCNf77V-hM')
 
 # For extensibility: Add more apps here and register their routers in urls.py
