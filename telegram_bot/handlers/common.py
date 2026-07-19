@@ -100,6 +100,8 @@ async def cmd_settings(message: Message, django_user):
         f"⚙️ <b>تنظیمات</b>\n"
         f"{DIVIDER}\n\n"
         f"👤 کاربر: <b>{esc(django_user.username)}</b>\n"
+        f"📅 عضویت: <b>{django_user.date_joined.strftime('%Y-%m-%d')}</b>\n"
+        f"💬 شناسه تلگرام: <b>{django_user.telegram_id}</b>\n"
         f"🔗 وضعیت اتصال: 🟢 متصل"
     )
     await message.answer(text, reply_markup=settings_kb(is_linked=True))
